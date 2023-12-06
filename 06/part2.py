@@ -1,17 +1,6 @@
 
 def get_ways_to_beat_record(time, target_distance):
-    count = 0
-    
-    for hold_time in range(time+1):
-        speed = hold_time
-        remaining_time = time - hold_time
-        
-        distance_travelled = speed * remaining_time
-        
-        if distance_travelled > target_distance:
-            count += 1
-        
-    return count
+    return int((time**2 - 4*target_distance) ** 0.5)
 
 def main():
     FILENAME = "input.txt"
