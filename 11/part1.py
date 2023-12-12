@@ -33,13 +33,13 @@ class GalaxyImage:
         
     def expand_empty(self):
         # go through rows
-        for row_num in range(len(self.image)-1,0,-1):
+        for row_num in range(len(self.image)-1,-1,-1):
             row = self.image[row_num]
             if all([cell == "." for cell in row]):
                 self.expand_row(row_num)
         
         # go through cols
-        for col_num in range(len(self.image[0])-1,0,-1):
+        for col_num in range(len(self.image[0])-1,-1,-1):
             if all([self.image[i][col_num] == "." for i in range(len(self.image))]):
                 self.expand_col(col_num)
     
@@ -69,7 +69,7 @@ def main():
     g = GalaxyImage(image)
     
     g.expand_empty()
-    g.display()
+    # g.display()
 
     galaxies = g.get_galaxy_positions()
 
