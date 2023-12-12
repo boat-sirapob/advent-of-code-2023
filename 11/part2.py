@@ -14,6 +14,17 @@ class GalaxyImage:
         self.image: list[str] = image
         self.empty_row_tracker = {}
         self.empty_col_tracker = {}
+        
+        self.populate_empty_trackers()
+        
+    def populate_empty_trackers(self):
+        self.empty_row_tracker[0] = self.empty_rows(0,0)
+        for y in range(1, len(self.image)):
+            self.empty_row_tracker[y] = self.empty_row_tracker[y-1] + self.empty_rows(y, y)
+        
+        self.empty_col_tracker[0] = self.empty_cols(0,0)
+        for x in range(1, len(self.image[0])):
+            self.empty_col_tracker[x] = self.empty_col_tracker[x-1] +  self.empty_cols(x, x)
     
     def empty_rows(self, start_row, end_row):
         result = 0
@@ -35,10 +46,6 @@ class GalaxyImage:
             for x, cell in enumerate(row):
                 if cell == "#":
                     positions.append(Vector2(x, y))
-                    if y not in self.empty_row_tracker:
-                        self.empty_row_tracker[y] = self.empty_rows(0, y)
-                    if x not in self.empty_col_tracker:
-                        self.empty_col_tracker[x] = self.empty_cols(0, x)
                     
         return positions
     
