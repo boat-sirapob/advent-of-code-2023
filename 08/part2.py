@@ -18,17 +18,27 @@ class System:
         
         cur = self.get_all_ending_in(start)
         
-        start_1 = [cur[0]]
+        states = [[] for _ in range(len(cur))]
         
-        # while not self.are_all_ending_in(cur, end):
-        while cur[0] not in start_1 or self.steps == 0:
+        loop_lengths = [None for _ in range(len(cur))]
+        
+        while not all(loop_lengths):
             instruction = self.instructions[i]
             
-            start_1.append(cur[0])
-            
-            print(cur[0], instruction, self.steps)
-            
             for j, node in enumerate(cur):
+                # get loop length when state repeats and skip
+                if node[-1] == end:
+                    try:
+                        state_index = states[j].index(node)
+
+                        if loop_lengths[j] == None:
+                            loop_lengths[j] = self.steps - state_index
+                        continue
+                    except ValueError:
+                        pass                
+                
+                states[j].append(node)
+                
                 if instruction == "L":
                     cur[j] = self.nodes[node].left
                 if instruction == "R":
@@ -37,10 +47,8 @@ class System:
             self.steps += 1
             
             i = (i + 1) % len(self.instructions)
-
-        print(cur[0], instruction, self.steps)        
             
-        return self.steps
+        return lcm(*loop_lengths)
     
     def get_all_ending_in(self, ending):
         return [node for node in self.nodes if node[-1] == ending]
@@ -58,7 +66,23 @@ def parse_lines(lines: list[str]):
     
     return nodes
 
+def gcd(a, b):
+    if b == 0:
+        return a
+    
+    return gcd(b, a % b)
+
+def lcm(*args):
+    a = args[0]
+    b = args[1:]
+    if len(b) != 1:
+        b = lcm(*b)
+    else:
+        b = b[0]
+    return a*b // gcd(a,b)
+
 def main():
+    
     FILENAME = "input.txt"
     
     with open(FILENAME, "r") as f:
@@ -70,9 +94,9 @@ def main():
 
     s = System(instructions, nodes)
     
-    ret = s.process_instructions()
-
-    print(ret)
+    result = s.process_instructions()
+    
+    print(result)
 
 if __name__ == "__main__":
     main()
